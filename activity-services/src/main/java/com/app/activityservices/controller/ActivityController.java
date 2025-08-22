@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/activities")
+@RequestMapping("/api/activities")
 public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
     @PostMapping("/create")
-    public ResponseEntity<ActivityResponse> createActivity(@RequestBody ActivityRequest request) {
+    public ResponseEntity<ActivityResponse> createActivity(@RequestBody ActivityRequest request, @RequestHeader("X-User-ID") String userId) {
+        if(userId != null)
+        {
+            request.setUserId(userId);
+        }
         return ResponseEntity.ok(activityService.createActivity(request));
     }
 

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class UserResponse {
     private String userId;
     private String firstName;
+    private String keycloakId;
     private String lastName;
     private String email;
     private UserRole role;

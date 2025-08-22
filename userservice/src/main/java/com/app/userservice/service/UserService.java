@@ -23,7 +23,6 @@ public class UserService {
         userResponse.setUserId(user.getId());
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
-        userResponse.setRole(user.getRole());
         userResponse.setCreatedAt(user.getCreatedAt());
         userResponse.setUpdatedAt(user.getUpdatedAt());
         return userResponse;
@@ -33,10 +32,20 @@ public class UserService {
 
         if(userRepository.existsByEmail(registerRequest.getEmail()))
         {
-            throw new RuntimeException("User already exists");
+            User existingUser = userRepository.findByEmail(registerRequest.getEmail());
+            UserResponse userResponse = new UserResponse();
+            userResponse.setEmail(existingUser.getEmail());
+            userResponse.setUserId(existingUser.getId());
+            userResponse.setKeycloakId(existingUser.getKeycloakId());
+            userResponse.setFirstName(existingUser.getFirstName());
+            userResponse.setLastName(existingUser.getLastName());
+            userResponse.setCreatedAt(existingUser.getCreatedAt());
+            userResponse.setUpdatedAt(existingUser.getUpdatedAt());
+            return userResponse;
         }
         User user = new User();
         user.setEmail(registerRequest.getEmail());
+        user.setKeycloakId(registerRequest.getKeycloakId());
         user.setPassword(registerRequest.getPassword());
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
@@ -44,9 +53,9 @@ public class UserService {
         UserResponse userResponse = new UserResponse();
         userResponse.setEmail(savedUser.getEmail());
         userResponse.setUserId(savedUser.getId());
+        userResponse.setKeycloakId(savedUser.getKeycloakId());
         userResponse.setFirstName(savedUser.getFirstName());
         userResponse.setLastName(savedUser.getLastName());
-        userResponse.setRole(savedUser.getRole());
         userResponse.setCreatedAt(savedUser.getCreatedAt());
         userResponse.setUpdatedAt(savedUser.getUpdatedAt());
         return userResponse;
@@ -54,6 +63,6 @@ public class UserService {
 
     public Boolean existsByUserId(String userId) {
         log.info("Calling user validation API for userId: {}", userId);
-        return userRepository.existsById(userId);
+        return userRepository.existsByKeycloakId(userId);
     }
 }
